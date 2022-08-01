@@ -9,15 +9,19 @@
 package com.entertainment.catalog;
 
 import static org.junit.Assert.*;
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 import com.entertainment.Television;
 
 public class CatalogTest {
-  
+
   /**
    * Contract: a no-matches result should be an empty collection (not null).
    */
@@ -27,7 +31,7 @@ public class CatalogTest {
     assertNotNull(tvs);
     assertTrue(tvs.isEmpty());
   }
-  
+
   @Test
   public void testFindByBrand() {
     Collection<Television> tvs = Catalog.findByBrand("RCA");
@@ -36,51 +40,52 @@ public class CatalogTest {
       assertEquals("RCA", tv.getBrand());
     }
   }
-  
+
   @Test
   public void testFindByBrandsNoneSpecified() {
-    Map<String,Collection<Television>> tvMap = Catalog.findByBrands();
+    Map<String, Collection<Television>> tvMap = Catalog.findByBrands();
     assertNotNull(tvMap);
     assertTrue(tvMap.isEmpty());
   }
 
   @Test
   public void testFindByBrands() {
-    Map<String,Collection<Television>> tvMap = Catalog.findByBrands("RCA", "Hitachi", "Sony", "Zenith", "NO-MATCHES");
+    Map<String, Collection<Television>> tvMap = Catalog.findByBrands("RCA", "Hitachi", "Sony",
+        "Zenith", "NO-MATCHES");
     assertEquals(9, tvMap.get("RCA").size());
     assertEquals(5, tvMap.get("Hitachi").size());
     assertEquals(7, tvMap.get("Sony").size());
     assertEquals(9, tvMap.get("Zenith").size());
     assertEquals(0, tvMap.get("NO-MATCHES").size());
   }
-  
-  @Test(expected=UnsupportedOperationException.class)
+
+  @Test(expected = UnsupportedOperationException.class)
   public void testGetInventoryReturnsReadOnlyCollection() {
     Collection<Television> inventory = Catalog.getInventory();
     inventory.clear();
   }
-  
+
   @Test
   public void testRemoveDuplicates() {
     Collection<Television> inventory = Catalog.getInventory();
     assertEquals(30, inventory.size());
-    
+
     Set<Television> inventorySet = new HashSet<>(inventory);
     assertEquals(23, inventorySet.size());
   }
-  
+
   /**
-   * OPTIONAL PART: find loudest Television
-   * Below is the Lab04.1 implementation that uses the "brute force" technique of iteration and comparison.
-   * 
-   * TODO: write a *new* test method that uses Collections.max(Collection, Comparator) instead. 
+   * OPTIONAL PART: find loudest Television Below is the Lab04.1 implementation that uses the "brute
+   * force" technique of iteration and comparison.
+   * <p>
+   * TODO: write a *new* test method that uses Collections.max(Collection, Comparator) instead.
    */
   @Test
   public void testLoudest() {
     Collection<Television> inventory = Catalog.getInventory();
     int maxVolume = 0;
     Television loudest = null;
-    
+
     for (Television tv : inventory) {
       int tvVolume = tv.getVolume();
       if (tvVolume > maxVolume) {
@@ -90,5 +95,12 @@ public class CatalogTest {
     }
     assertEquals("Sony", loudest.getBrand());
     assertEquals(94, loudest.getVolume());
+  }
+
+  @Test
+  public void testSortByVolume() {
+    List<Television> tvs = new ArrayList<>(Catalog.getInventory());
+    tvs.sort((tv1, tv2) -> Integer.compare(tv1.getVolume(), tv2.getVolume()));
+    System.out.println(tvs);
   }
 }

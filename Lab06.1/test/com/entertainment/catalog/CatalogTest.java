@@ -100,7 +100,7 @@ public class CatalogTest {
   @Test
   public void testSortByVolume() {
     List<Television> tvs = new ArrayList<>(Catalog.getInventory());
-    tvs.sort(Comparator.comparingInt(Television::getVolume));
+    tvs.sort(Comparator.comparingInt(television -> television.getVolume()));
     System.out.println(tvs);
   }
 }

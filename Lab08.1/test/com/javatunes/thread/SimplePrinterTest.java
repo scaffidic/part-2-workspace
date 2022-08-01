@@ -13,7 +13,10 @@ public class SimplePrinterTest {
   public static void main(String[] args) {
     Thread thd1 = new Thread(new SimplePrinter());
     thd1.start();
-    
+
     // TODO: create another Thread, passing in a lambda as its Runnable - then start it
+
+    Thread thd2 = new Thread(() -> System.out.println("SimplePrinter.run"));
+    thd2.start();
   }
 }
